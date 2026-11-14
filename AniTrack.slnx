@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="anitrack.client/anitrack.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="AniTrack.Server/AniTrack.Server.csproj" />
+</Solution>

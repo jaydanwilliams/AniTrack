@@ -1,6 +1,3 @@
-@AniTrack.Server_HostAddress = http://localhost:5012
+@host = https://localhost:7089
 
-GET {{AniTrack.Server_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+POST {{host}}/api/admin/import?pages=4

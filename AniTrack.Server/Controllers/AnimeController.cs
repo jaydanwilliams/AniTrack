@@ -1,7 +1,6 @@
-﻿using AniTrack.Server.Data;
-using AniTrack.Server.Models;
+﻿using AniTrack.Server.Dtos;
+using AniTrack.Server.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AniTrack.Server.Controllers;
 
@@ -9,18 +8,26 @@ namespace AniTrack.Server.Controllers;
 [Route("api/[controller]")]
 public class AnimeController : ControllerBase
 {
-    private readonly AppDbContext _db;
+    private readonly AnimeService _anime;
 
-    public AnimeController(AppDbContext db)   // ← DI provides the DbContext
+    public AnimeController(AnimeService anime)
     {
-        _db = db;
+        _anime = anime;
     }
 
-    // GET /api/anime
+    // GET /api/anime?search=titan&genre=Action&sort=Score&page=1
     [HttpGet]
-    public async Task<ActionResult<List<Anime>>> GetAll()
+    public async Task<ActionResult<PagedResult<AnimeSummaryDto>>> GetAnime(
+        [FromQuery] AnimeQuery query, CancellationToken ct)
     {
-        var anime = await _db.Anime.AsNoTracking().ToListAsync();
-        return Ok(anime);
+        return Ok(await _anime.SearchAsync(query, ct));
+    }
+
+    // GET /api/anime/5
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<AnimeDetailDto>> GetById(int id, CancellationToken ct)
+    {
+        var anime = await _anime.GetByIdAsync(id, ct);
+        return anime is null ? NotFound() : Ok(anime);
     }
 }

@@ -1,3 +1,34 @@
 @host = https://localhost:7089
 
+### Default: page 1, most popular
+GET {{host}}/api/anime
+
+### Search
+GET {{host}}/api/anime?search=titan
+
+### Filter + sort + small page
+GET {{host}}/api/anime?genre=Romance&sort=Score&pageSize=5
+
+### Season filter
+GET {{host}}/api/anime?year=2023&season=Fall
+
+### Page 2
+GET {{host}}/api/anime?page=2
+
+### Detail
+GET {{host}}/api/anime/1
+
+### Missing anime (expect 404)
+GET {{host}}/api/anime/999999
+
+### Invalid page size (expect 400)
+GET {{host}}/api/anime?pageSize=500
+
+### Invalid sort (expect 400)
+GET {{host}}/api/anime?sort=banana
+
+### Genres
+GET {{host}}/api/genres
+
+### Import (still here for refreshing data)
 POST {{host}}/api/admin/import?pages=4

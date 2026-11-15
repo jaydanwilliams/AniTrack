@@ -24,6 +24,11 @@ public class AppDbContext : DbContext
             e.Property(a => a.Format).HasConversion<string>().HasMaxLength(20);
             e.Property(a => a.Status).HasConversion<string>().HasMaxLength(20);
             e.Property(a => a.Season).HasConversion<string>().HasMaxLength(10);
+
+            // Add indexes for the columns we filter/sort on
+            e.HasIndex(a => a.Popularity);
+            e.HasIndex(a => a.AverageScore);
+            e.HasIndex(a => a.SeasonYear);
         });
 
         modelBuilder.Entity<Genre>(e =>

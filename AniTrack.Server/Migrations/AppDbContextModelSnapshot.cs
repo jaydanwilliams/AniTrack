@@ -94,6 +94,12 @@ namespace AniTrack.Server.Migrations
                     b.HasIndex("AniListId")
                         .IsUnique();
 
+                    b.HasIndex("AverageScore");
+
+                    b.HasIndex("Popularity");
+
+                    b.HasIndex("SeasonYear");
+
                     b.ToTable("Anime");
                 });
 

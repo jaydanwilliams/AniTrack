@@ -1,10 +1,13 @@
-﻿using AniTrack.Server.Services;
+﻿using AniTrack.Server.Models;
+using AniTrack.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AniTrack.Server.Controllers;
 
 [ApiController]
 [Route("api/admin")]
+[Authorize(Roles = AppRoles.Admin)]
 public class AdminController : ControllerBase
 {
     private readonly AnimeImportService _import;

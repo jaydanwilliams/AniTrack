@@ -32,3 +32,21 @@ GET {{host}}/api/genres
 
 ### Import (still here for refreshing data)
 POST {{host}}/api/admin/import?pages=4
+
+### Not logged in → expect 401
+GET {{host}}/api/auth/me
+
+### Not logged in → expect 401
+POST {{host}}/api/admin/import?pages=1
+
+### Bad registration → expect 400 with errors for all three fields
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "userName": "a!", "email": "not-an-email", "password": "123" }
+
+### Wrong login → expect 401 with the vague message
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "userNameOrEmail": "nobody", "password": "whatever123" }

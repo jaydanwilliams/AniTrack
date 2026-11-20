@@ -28,6 +28,7 @@ builder.Services.AddHttpClient<AniListClient>(client =>
 
 builder.Services.AddScoped<AnimeImportService>();
 builder.Services.AddScoped<AnimeService>();
+builder.Services.AddScoped<ListService>();
 
 builder.Services
     .AddIdentityCore<AppUser>(options =>

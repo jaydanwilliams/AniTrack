@@ -10,6 +10,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
 
     public DbSet<Anime> Anime => Set<Anime>();
     public DbSet<Genre> Genres => Set<Genre>();
+    public DbSet<ListEntry> ListEntries => Set<ListEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,6 +39,25 @@ public class AppDbContext : IdentityDbContext<AppUser>
         {
             e.HasIndex(g => g.Name).IsUnique();
             e.Property(g => g.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<ListEntry>(e =>
+        {
+            // One entry per user per anime. Also makes "get this user's list" fast,
+            // because the index is sorted by UserId first.
+            e.HasIndex(x => new { x.UserId, x.AnimeId }).IsUnique();
+
+            e.Property(x => x.Status).HasConversion<string>().HasMaxLength(20);
+            e.Property(x => x.Notes).HasMaxLength(1000);
+
+            e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Anime).WithMany().HasForeignKey(x => x.AnimeId).OnDelete(DeleteBehavior.Cascade);
+
+            e.ToTable(t =>
+            {
+                t.HasCheckConstraint("CK_ListEntries_Score", "[Score] IS NULL OR [Score] BETWEEN 1 AND 10");
+                t.HasCheckConstraint("CK_ListEntries_Progress", "[Progress] >= 0");
+            });
         });
     }
 }

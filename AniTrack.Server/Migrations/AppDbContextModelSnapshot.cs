@@ -192,6 +192,63 @@ namespace AniTrack.Server.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("AniTrack.Server.Models.ListEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AnimeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly?>("CompletedOn")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Progress")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly?>("StartedOn")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimeId");
+
+                    b.HasIndex("UserId", "AnimeId")
+                        .IsUnique();
+
+                    b.ToTable("ListEntries", t =>
+                        {
+                            t.HasCheckConstraint("CK_ListEntries_Progress", "[Progress] >= 0");
+
+                            t.HasCheckConstraint("CK_ListEntries_Score", "[Score] IS NULL OR [Score] BETWEEN 1 AND 10");
+                        });
+                });
+
             modelBuilder.Entity("AnimeGenre", b =>
                 {
                     b.Property<int>("AnimeId")
@@ -338,6 +395,25 @@ namespace AniTrack.Server.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("AniTrack.Server.Models.ListEntry", b =>
+                {
+                    b.HasOne("AniTrack.Server.Models.Anime", "Anime")
+                        .WithMany()
+                        .HasForeignKey("AnimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AniTrack.Server.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Anime");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AnimeGenre", b =>
